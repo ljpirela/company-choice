@@ -46,82 +46,109 @@
             <p class="text-gray-400 mb-8 text-sm">Completa este formulario para que nuestro equipo comercial evalúe la integración de tu e-commerce con nuestra red de almacenes.</p>
 
             <form id="partnerForm" novalidate class="space-y-6 relative z-10">
-                <!-- Fieldset de Datos Generales -->
+                <!-- Información de la Empresa -->
                 <fieldset class="border border-[#363a43] rounded-lg p-5 bg-[#1a1c21]">
                     <legend class="px-2 text-sm font-bold text-[#FF6A00]">Información de la Empresa</legend>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-3">
                         <div>
                             <label for="fullName" class="block text-sm font-medium text-gray-400 mb-1">Nombre del Representante *</label>
-                            <input type="text" id="fullName" name="fullName" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none transition-colors" placeholder="Ej. Valentina Cruz">
+                            <input type="text" id="fullName" name="fullName" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none">
                             <span id="fullNameError" class="error-message text-red-500 text-xs mt-1" role="alert">Este campo es obligatorio.</span>
                         </div>
                         <div>
                             <label for="companyName" class="block text-sm font-medium text-gray-400 mb-1">Nombre del E-commerce *</label>
-                            <input type="text" id="companyName" name="companyName" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none transition-colors" placeholder="Ej. TechStore LLC">
+                            <input type="text" id="companyName" name="companyName" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none">
                             <span id="companyNameError" class="error-message text-red-500 text-xs mt-1" role="alert">El nombre de la empresa es obligatorio.</span>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+                        <div>
+                            <label for="website" class="block text-sm font-medium text-gray-400 mb-1">Sitio Web *</label>
+                            <input type="url" id="website" name="website" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none" placeholder="https://">
+                            <span id="websiteError" class="error-message text-red-500 text-xs mt-1" role="alert">Introduce una URL válida.</span>
+                        </div>
+                        <div>
+                            <label for="product" class="block text-sm font-medium text-gray-400 mb-1">Tipo de Producto *</label>
+                            <input type="text" id="product" name="product" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none">
+                            <span id="productError" class="error-message text-red-500 text-xs mt-1" role="alert">El tipo de producto es obligatorio.</span>
+                        </div>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-400 mb-1">Email Corporativo *</label>
-                            <input type="email" id="email" name="email" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none transition-colors" placeholder="nombre@empresa.com">
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none">
                             <span id="emailError" class="error-message text-red-500 text-xs mt-1" role="alert">Introduce un email válido.</span>
                         </div>
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Teléfono</label>
-                            <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none transition-colors" placeholder="+34 600 000 000">
-                            <span id="phoneError" class="error-message text-red-500 text-xs mt-1" role="alert">El teléfono debe contener solo números y el símbolo +.</span>
+                            <label for="phone" class="block text-sm font-medium text-gray-400 mb-1">Teléfono *</label>
+                            <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none" placeholder="+34 600 000 000">
+                            <span id="phoneError" class="error-message text-red-500 text-xs mt-1" role="alert">El teléfono es obligatorio y debe ser válido.</span>
                         </div>
                     </div>
                 </fieldset>
 
-                <!-- Fieldset de Necesidades Operativas -->
+                <!-- Necesidades Logísticas -->
                 <fieldset class="border border-[#363a43] rounded-lg p-5 bg-[#1a1c21]">
                     <legend class="px-2 text-sm font-bold text-[#FF6A00]">Necesidades Logísticas</legend>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-3">
                         <div>
                             <label for="targetMarket" class="block text-sm font-medium text-gray-400 mb-1">Mercado Principal *</label>
                             <select id="targetMarket" name="targetMarket" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none">
                                 <option value="" class="text-gray-500">Selecciona un mercado...</option>
-                                <option value="US">Estados Unidos (Los Ángeles)</option>
-                                <option value="ES">España (Zaragoza)</option>
-                                <option value="BOTH">Ambos mercados</option>
+                                <option value="US">Estados Unidos</option>
+                                <option value="ES">España</option>
+                                <option value="BOTH">Ambos</option>
                             </select>
-                            <span id="targetMarketError" class="error-message text-red-500 text-xs mt-1" role="alert">Selecciona un mercado objetivo.</span>
+                            <span id="targetMarketError" class="error-message text-red-500 text-xs mt-1" role="alert">Selecciona un mercado.</span>
                         </div>
                         <div>
                             <label for="monthlyVolume" class="block text-sm font-medium text-gray-400 mb-1">Volumen mensual (Envíos) *</label>
                             <input type="number" id="monthlyVolume" name="monthlyVolume" min="1" required class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none" placeholder="Ej. 5000">
-                            <span id="monthlyVolumeError" class="error-message text-red-500 text-xs mt-1" role="alert">Introduce un volumen válido (mayor a 0).</span>
+                            <span id="monthlyVolumeError" class="error-message text-red-500 text-xs mt-1" role="alert">Introduce un volumen válido.</span>
+                            <!-- Aviso de volumen bajo -->
+                            <div id="lowVolumeWarning" class="hidden text-yellow-500 text-xs mt-2 font-medium">Aviso: Para volúmenes menores a 1000 envíos, aplican tarifas estándar.</div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="current3pl" class="block text-sm font-medium text-gray-400 mb-1">Proveedor 3PL Actual</label>
+                            <input type="text" id="current3pl" name="current3pl" class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none" placeholder="¿Con quién trabajas actualmente?">
                         </div>
                     </div>
 
                     <div class="mt-5">
-                        <span class="block text-sm font-medium text-gray-400 mb-3">Servicios de Interés</span>
-                        <div class="space-y-3">
+                        <span class="block text-sm font-medium text-gray-400 mb-3">Servicios de Interés *</span>
+                        <div class="space-y-3" id="servicesContainer">
                             <label class="flex items-center group cursor-pointer">
                                 <input type="checkbox" name="services" value="warehouse" class="w-4 h-4 bg-[#212429] border-[#363a43] rounded focus:ring-[#FF6A00]">
-                                <span class="ml-3 text-sm text-gray-300 group-hover:text-white transition-colors">Gestión de almacén y picking</span>
+                                <span class="ml-3 text-sm text-gray-300">Gestión de almacén y picking</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
                                 <input type="checkbox" name="services" value="last_mile" class="w-4 h-4 bg-[#212429] border-[#363a43] rounded focus:ring-[#FF6A00]">
-                                <span class="ml-3 text-sm text-gray-300 group-hover:text-white transition-colors">Última milla y gestión de transportistas</span>
+                                <span class="ml-3 text-sm text-gray-300">Última milla y gestión de transportistas</span>
                             </label>
                             <label class="flex items-center group cursor-pointer">
                                 <input type="checkbox" name="services" value="returns" class="w-4 h-4 bg-[#212429] border-[#363a43] rounded focus:ring-[#FF6A00]">
-                                <span class="ml-3 text-sm text-gray-300 group-hover:text-white transition-colors">Logística inversa (Devoluciones automatizadas)</span>
+                                <span class="ml-3 text-sm text-gray-300">Logística inversa</span>
                             </label>
                         </div>
+                        <span id="servicesError" class="error-message text-red-500 text-xs mt-2" role="alert">Debes seleccionar al menos un servicio.</span>
                     </div>
                 </fieldset>
 
-                <!-- Botones de Acción -->
+                <!-- Comentarios y Privacidad -->
+                <fieldset class="border border-[#363a43] rounded-lg p-5 bg-[#1a1c21]">
+                    <div class="mb-4">
+                        <label for="comments" class="block text-sm font-medium text-gray-400 mb-1">Comentarios Adicionales</label>
+                        <textarea id="comments" name="comments" rows="3" class="w-full px-4 py-2 bg-[#212429] border border-[#363a43] text-gray-200 rounded-md focus:ring-1 focus:ring-[#FF6A00] focus:border-[#FF6A00] outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="flex items-center group cursor-pointer">
+                            <input type="checkbox" id="privacy" name="privacy" required class="w-4 h-4 bg-[#212429] border-[#363a43] rounded focus:ring-[#FF6A00]">
+                            <span class="ml-3 text-sm text-gray-300">Acepto la política de privacidad y el tratamiento de mis datos *</span>
+                        </label>
+                        <span id="privacyError" class="error-message text-red-500 text-xs mt-1" role="alert">Debes aceptar la política de privacidad.</span>
+                    </div>
+                </fieldset>
+
+                <!-- Botones -->
                 <div class="flex items-center justify-end space-x-4 pt-4 border-t border-[#363a43]">
-                    <button type="reset" id="resetBtn" class="text-sm font-medium text-gray-500 hover:text-white focus:outline-none px-4 py-2 rounded-md transition-colors">Limpiar Formulario</button>
-                    <button type="submit" class="bg-[#FF6A00] hover:bg-[#e55f00] text-white px-6 py-2 rounded-md font-bold transition-colors shadow-lg shadow-[#FF6A00]/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#2a2e35] focus:ring-[#FF6A00]">Enviar Solicitud</button>
+                    <button type="reset" id="resetBtn" class="text-sm font-medium text-gray-500 hover:text-white transition-colors">Limpiar</button>
+                    <button type="submit" class="bg-[#FF6A00] hover:bg-[#e55f00] text-white px-6 py-2 rounded-md font-bold shadow-lg shadow-[#FF6A00]/20 focus:outline-none focus:ring-2 focus:ring-[#FF6A00]">Enviar Solicitud</button>
                 </div>
             </form>
 
