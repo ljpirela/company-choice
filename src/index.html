@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrackFlow Tech | Consola de Dominio y Utilidades TS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#212429] text-gray-200 min-h-screen antialiased" style="font-family: 'Inter', sans-serif;">
+  <!-- Header -->
+  <header class="bg-[#2a2e35] border-b border-[#363a43] sticky top-0 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#FF6A00] to-orange-600 flex items-center justify-center shadow-lg shadow-[#FF6A00]/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xl font-black tracking-tight text-white">Track<span class="text-[#FF6A00]">Flow</span></span>
+          <span class="ml-2 text-xs font-semibold uppercase tracking-wider bg-[#FF6A00]/15 text-[#FF6A00] px-2.5 py-0.5 rounded-full border border-[#FF6A00]/30">Hito 2 · TypeScript Engine</span>
+        </div>
+      </div>
+      <span id="immutabilityBadge" class="text-xs text-emerald-400 bg-emerald-950/50 border border-emerald-500/30 px-3 py-1 rounded-md">
+        ✓ Arrays originales intactos (Inmutable)
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <!-- KPIs / Agregaciones en Tiempo Real -->
+    <section aria-labelledby="reports-heading">
+      <div class="flex items-center justify-between mb-4">
+        <h1 id="reports-heading" class="text-xl font-bold text-white">1. Reportes y Agregaciones de Almacén</h1>
+        <button id="btnRefreshReports" class="text-xs bg-[#2a2e35] hover:bg-[#363a43] border border-[#363a43] text-gray-200 px-3 py-1.5 rounded-md transition-colors">
+          Recalcular Reportes
+        </button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpiCards"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <h2 class="text-sm font-bold text-[#FF6A00] mb-3">Conteo por Categoría</h2>
+          <div id="categoryReport" class="space-y-2 text-sm"></div>
+        </div>
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <h2 class="text-sm font-bold text-[#FF6A00] mb-3">Envíos Agrupados por Estado</h2>
+          <div id="statusReport" class="space-y-2 text-sm"></div>
+        </div>
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <h2 class="text-sm font-bold text-[#FF6A00] mb-3">Top Transportistas Asignados</h2>
+          <div id="topCarriersReport" class="space-y-2 text-sm"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gestión de Colecciones -->
+    <section class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-6 space-y-5" aria-labelledby="collections-heading">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 id="collections-heading" class="text-lg font-bold text-white">2. Colecciones: Filtrado y Ordenamiento de Inventario</h2>
+          <p class="text-xs text-gray-400">Prueba <code>filterProductsByWarehouse</code>, <code>filterProductsByCategory</code>, <code>filterLowStockProducts</code> y <code>sortProductsByStock</code>.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <select id="warehouseFilter" aria-label="Filtrar por almacén" class="bg-[#212429] border border-[#363a43] text-sm rounded-md px-3 py-1.5 focus:border-[#FF6A00] outline-none">
+            <option value="ALL">Todos los almacenes</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Zaragoza">Zaragoza</option>
+          </select>
+          <select id="categoryFilter" aria-label="Filtrar por categoría" class="bg-[#212429] border border-[#363a43] text-sm rounded-md px-3 py-1.5 focus:border-[#FF6A00] outline-none">
+            <option value="ALL">Todas las categorías</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Cosmetics">Cosmetics</option>
+            <option value="Home">Home</option>
+            <option value="Other">Other</option>
+          </select>
+          <button id="btnLowStock" class="bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 text-xs font-semibold px-3 py-1.5 rounded-md transition-colors">
+            Solo Stock Bajo
+          </button>
+          <button id="btnSortAsc" class="bg-[#212429] hover:border-[#FF6A00] border border-[#363a43] text-xs font-medium px-3 py-1.5 rounded-md transition-colors">
+            Stock ↑ (Asc)
+          </button>
+          <button id="btnSortDesc" class="bg-[#212429] hover:border-[#FF6A00] border border-[#363a43] text-xs font-medium px-3 py-1.5 rounded-md transition-colors">
+            Stock ↓ (Desc)
+          </button>
+          <button id="btnResetProducts" class="text-xs text-gray-400 hover:text-white px-2 py-1.5">
+            Restablecer
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-[#363a43] text-gray-400 text-xs uppercase">
+              <th class="py-2.5 px-3">SKU</th>
+              <th class="py-2.5 px-3">Producto</th>
+              <th class="py-2.5 px-3">Categoría</th>
+              <th class="py-2.5 px-3">Almacén</th>
+              <th class="py-2.5 px-3">Peso</th>
+              <th class="py-2.5 px-3">Stock / Mín</th>
+              <th class="py-2.5 px-3">Costo Unit.</th>
+              <th class="py-2.5 px-3">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody" class="divide-y divide-[#363a43]/60"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Búsqueda Lineal y Binaria -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6" aria-labelledby="search-heading">
+      <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-6 space-y-4">
+        <h2 id="search-heading" class="text-lg font-bold text-white">3A. Búsqueda Lineal (SKU / Shipment ID)</h2>
+        <p class="text-xs text-gray-400"><code>findProductBySKU</code> (case-insensitive) y <code>findShipmentById</code> en colecciones desordenadas.</p>
+        <div class="flex gap-2">
+          <input id="skuSearchInput" type="text" value="laptop-dell-15" placeholder="Ej: laptop-dell-15 o SH-2024-8821" class="flex-1 bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm focus:border-[#FF6A00] outline-none" />
+          <button id="btnSearchSku" class="bg-[#FF6A00] hover:bg-[#e55f00] text-white text-xs font-bold px-4 py-2 rounded-md transition-colors">
+            Buscar SKU
+          </button>
+          <button id="btnSearchShipment" class="bg-[#212429] hover:border-[#FF6A00] border border-[#363a43] text-gray-200 text-xs font-semibold px-4 py-2 rounded-md transition-colors">
+            Buscar Envío
+          </button>
+        </div>
+        <pre id="linearSearchResult" class="bg-[#1a1c21] border border-[#363a43] rounded-lg p-3 text-xs text-gray-300 overflow-x-auto"></pre>
+      </div>
+
+      <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-6 space-y-4">
+        <h2 class="text-lg font-bold text-white">3B. Búsqueda Binaria por Peso (kg)</h2>
+        <p class="text-xs text-gray-400">Ordena ascendentemente por peso `[0.3, 0.8, 2.3]` y ejecuta <code>binarySearchProductByWeight</code>.</p>
+        <div class="flex gap-2">
+          <input id="weightSearchInput" type="number" step="0.1" value="0.8" placeholder="Peso en kg (ej. 0.8)" class="flex-1 bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm focus:border-[#FF6A00] outline-none" />
+          <button id="btnBinarySearch" class="bg-[#FF6A00] hover:bg-[#e55f00] text-white text-xs font-bold px-4 py-2 rounded-md transition-colors">
+            Ejecutar Búsqueda Binaria
+          </button>
+        </div>
+        <pre id="binarySearchResult" class="bg-[#1a1c21] border border-[#363a43] rounded-lg p-3 text-xs text-gray-300 overflow-x-auto"></pre>
+      </div>
+    </section>
+
+    <!-- Motor de Selección y Scoring de Transportistas -->
+    <section class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-6 space-y-5" aria-labelledby="carrier-heading">
+      <div>
+        <h2 id="carrier-heading" class="text-lg font-bold text-white">4. Motor de Scoring y Costos de Transportistas</h2>
+        <p class="text-xs text-gray-400">Evalúa <code>scoreCarrierForShipment</code>, <code>calculateShippingCost</code>, <code>selectBestCarrier</code> y <code>sortCarriersByReliability</code>.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 bg-[#1a1c21] p-4 rounded-lg border border-[#363a43]">
+        <div>
+          <label for="simProduct" class="block text-xs text-gray-400 mb-1">Producto</label>
+          <select id="simProduct" class="w-full bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm outline-none focus:border-[#FF6A00]"></select>
+        </div>
+        <div>
+          <label for="simQty" class="block text-xs text-gray-400 mb-1">Cantidad</label>
+          <input id="simQty" type="number" min="1" value="1" class="w-full bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm outline-none focus:border-[#FF6A00]" />
+        </div>
+        <div>
+          <label for="simCountry" class="block text-xs text-gray-400 mb-1">País Destino</label>
+          <select id="simCountry" class="w-full bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm outline-none focus:border-[#FF6A00]">
+            <option value="Spain" selected>Spain</option>
+            <option value="United States">United States</option>
+          </select>
+        </div>
+        <div>
+          <label for="simDistance" class="block text-xs text-gray-400 mb-1">Distancia (km)</label>
+          <input id="simDistance" type="number" min="0" value="320" class="w-full bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm outline-none focus:border-[#FF6A00]" />
+        </div>
+        <div>
+          <label for="simPriority" class="block text-xs text-gray-400 mb-1">Prioridad</label>
+          <select id="simPriority" class="w-full bg-[#212429] border border-[#363a43] rounded-md px-3 py-2 text-sm outline-none focus:border-[#FF6A00]">
+            <option value="Standard">Standard (+0%)</option>
+            <option value="Express" selected>Express (+30%)</option>
+            <option value="Same-day">Same-day (+60%)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="bestCarrierBanner" class="p-4 rounded-lg border"></div>
+      <div id="carrierCards" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- Validaciones de Negocio -->
+    <section class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-6 space-y-4" aria-labelledby="validations-heading">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 id="validations-heading" class="text-lg font-bold text-white">5. Validaciones de Reglas de Negocio y Casos Límite</h2>
+          <p class="text-xs text-gray-400">Ejecuta <code>validateProduct</code>, <code>validateShipment</code> y <code>validateCarrier</code> frente a datos válidos y corruptos.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btnValidateValid" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-md transition-colors">
+            Probar Entidades Válidas
+          </button>
+          <button id="btnValidateInvalidProduct" class="bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 text-xs font-semibold px-3.5 py-2 rounded-md transition-colors">
+            Producto Inválido
+          </button>
+          <button id="btnValidateInvalidShipment" class="bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 text-xs font-semibold px-3.5 py-2 rounded-md transition-colors">
+            Envío Inválido
+          </button>
+          <button id="btnValidateInvalidCarrier" class="bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 text-xs font-semibold px-3.5 py-2 rounded-md transition-colors">
+            Transportista Inválido
+          </button>
+        </div>
+      </div>
+      <pre id="validationOutput" class="bg-[#1a1c21] border border-[#363a43] rounded-lg p-4 text-xs text-gray-300 overflow-x-auto"></pre>
+    </section>
+  </main>
+
+  <script type="module">
+    import { sampleProducts, sampleCarriers, sampleShipment } from "../dist/types/models.js";
+    import {
+      filterProductsByWarehouse,
+      filterProductsByCategory,
+      filterLowStockProducts,
+      sortProductsByStock,
+      sortCarriersByReliability,
+    } from "../dist/utils/collections.js";
+    import {
+      findProductBySKU,
+      findShipmentById,
+      binarySearchProductByWeight,
+    } from "../dist/utils/search.js";
+    import {
+      calculateShippingCost,
+      scoreCarrierForShipment,
+      selectBestCarrier,
+      countProductsByCategory,
+      calculateTotalInventoryValue,
+      calculateAverageShipmentDistance,
+      groupShipmentsByStatus,
+      findTopCarriers,
+    } from "../dist/utils/transformations.js";
+    import {
+      validateProduct,
+      validateShipment,
+      validateCarrier,
+    } from "../dist/utils/validations.js";
+
+    const demoShipments = [
+      sampleShipment,
+      {
+        ...sampleShipment,
+        id: "SH-2024-8822",
+        sku: "SHOE-BLK-42",
+        origin: "Los Angeles",
+        destination: { city: "San Diego", country: "United States", postalCode: "92101", distanceKm: 195 },
+        priority: "Standard",
+        carrier: "UPS",
+        status: "Delivered",
+      },
+      {
+        ...sampleShipment,
+        id: "SH-2024-8823",
+        sku: "PERFUME-COCO-50",
+        origin: "Los Angeles",
+        destination: { city: "Las Vegas", country: "United States", postalCode: "89101", distanceKm: 435 },
+        priority: "Express",
+        carrier: "DHL Express",
+        status: "In transit",
+      },
+      {
+        ...sampleShipment,
+        id: "SH-2024-8824",
+        sku: "LAPTOP-DELL-15",
+        origin: "Zaragoza",
+        destination: { city: "Barcelona", country: "Spain", postalCode: "08001", distanceKm: 310 },
+        priority: "Same-day",
+        carrier: "SEUR",
+        status: "Delivered",
+      },
+      {
+        ...sampleShipment,
+        id: "SH-2024-8825",
+        sku: "LAPTOP-DELL-15",
+        origin: "Zaragoza",
+        destination: { city: "Valencia", country: "Spain", postalCode: "46001", distanceKm: 308 },
+        priority: "Express",
+        carrier: "SEUR",
+        status: "Assigned",
+      },
+    ];
+
+    // 1. Renderizar Reportes y KPIs
+    function renderReports() {
+      const totalValue = calculateTotalInventoryValue(sampleProducts);
+      const avgDistance = calculateAverageShipmentDistance(demoShipments);
+      const lowStockCount = filterLowStockProducts(sampleProducts).length;
+      const byCategory = countProductsByCategory(sampleProducts);
+      const byStatus = groupShipmentsByStatus(demoShipments);
+      const topCarriers = findTopCarriers(demoShipments, 3);
+
+      document.getElementById("kpiCards").innerHTML = `
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <span class="text-xs text-gray-400">Valor Total Inventario</span>
+          <p class="text-2xl font-black text-white mt-1">$${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+        </div>
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <span class="text-xs text-gray-400">SKUs Registrados</span>
+          <p class="text-2xl font-black text-white mt-1">${sampleProducts.length}</p>
+        </div>
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <span class="text-xs text-gray-400">Alertas Stock Bajo</span>
+          <p class="text-2xl font-black text-amber-400 mt-1">${lowStockCount}</p>
+        </div>
+        <div class="bg-[#2a2e35] border border-[#363a43] rounded-xl p-5">
+          <span class="text-xs text-gray-400">Distancia Media Envíos</span>
+          <p class="text-2xl font-black text-[#FF6A00] mt-1">${avgDistance} km</p>
+        </div>
+      `;
+
+      document.getElementById("categoryReport").innerHTML = Object.entries(byCategory)
+        .map(([cat, count]) => `<div class="flex justify-between border-b border-[#363a43]/50 pb-1"><span>${cat}</span><span class="font-bold text-white">${count}</span></div>`)
+        .join("");
+
+      document.getElementById("statusReport").innerHTML = Object.entries(byStatus)
+        .map(([status, list]) => `<div class="flex justify-between border-b border-[#363a43]/50 pb-1"><span>${status}</span><span class="font-bold text-white">${list.length}</span></div>`)
+        .join("");
+
+      document.getElementById("topCarriersReport").innerHTML = topCarriers
+        .map((item, idx) => `<div class="flex justify-between border-b border-[#363a43]/50 pb-1"><span>#${idx + 1} ${item.carrier}</span><span class="font-bold text-[#FF6A00]">${item.count} envíos</span></div>`)
+        .join("");
+    }
+
+    // 2. Renderizar Tabla de Productos
+    let displayedProducts = [...sampleProducts];
+
+    function renderProducts(list) {
+      const tbody = document.getElementById("productsTableBody");
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-gray-400">No se encontraron productos para este criterio.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list
+        .map(
+          (p) => `
+        <tr class="hover:bg-[#212429]/60 transition-colors">
+          <td class="py-2.5 px-3 font-mono text-xs text-[#FF6A00] font-semibold">${p.sku}</td>
+          <td class="py-2.5 px-3 font-medium text-white">${p.name}</td>
+          <td class="py-2.5 px-3">${p.category}</td>
+          <td class="py-2.5 px-3">${p.warehouse}</td>
+          <td class="py-2.5 px-3">${p.weightKg} kg</td>
+          <td class="py-2.5 px-3 font-semibold ${p.stockQuantity <= p.minStockThreshold ? "text-amber-400" : "text-emerald-400"}">${p.stockQuantity} / ${p.minStockThreshold}</td>
+          <td class="py-2.5 px-3">$${p.unitCostUSD.toFixed(2)}</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-xs ${p.stockQuantity <= p.minStockThreshold ? "bg-amber-500/20 text-amber-300" : "bg-emerald-500/20 text-emerald-300"}">${p.status}</span></td>
+        </tr>`
+        )
+        .join("");
+
+      document.getElementById("immutabilityBadge").textContent =
+        `✓ Original intacto (primer SKU en memoria: ${sampleProducts[0].sku})`;
+    }
+
+    function applyFilters() {
+      const wh = document.getElementById("warehouseFilter").value;
+      const cat = document.getElementById("categoryFilter").value;
+      let result = [...sampleProducts];
+      if (wh !== "ALL") result = filterProductsByWarehouse(result, wh);
+      if (cat !== "ALL") result = filterProductsByCategory(result, cat);
+      displayedProducts = result;
+      renderProducts(displayedProducts);
+    }
+
+    document.getElementById("warehouseFilter").addEventListener("change", applyFilters);
+    document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+    document.getElementById("btnLowStock").addEventListener("click", () => {
+      displayedProducts = filterLowStockProducts(sampleProducts);
+      renderProducts(displayedProducts);
+    });
+    document.getElementById("btnSortAsc").addEventListener("click", () => {
+      displayedProducts = sortProductsByStock(displayedProducts, "asc");
+      renderProducts(displayedProducts);
+    });
+    document.getElementById("btnSortDesc").addEventListener("click", () => {
+      displayedProducts = sortProductsByStock(displayedProducts, "desc");
+      renderProducts(displayedProducts);
+    });
+    document.getElementById("btnResetProducts").addEventListener("click", () => {
+      document.getElementById("warehouseFilter").value = "ALL";
+      document.getElementById("categoryFilter").value = "ALL";
+      displayedProducts = [...sampleProducts];
+      renderProducts(displayedProducts);
+    });
+
+    // 3. Búsquedas
+    document.getElementById("btnSearchSku").addEventListener("click", () => {
+      const query = document.getElementById("skuSearchInput").value;
+      const res = findProductBySKU(sampleProducts, query);
+      document.getElementById("linearSearchResult").textContent = JSON.stringify(
+        { operacion: "findProductBySKU", entrada: query, resultado: res },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnSearchShipment").addEventListener("click", () => {
+      const query = document.getElementById("skuSearchInput").value;
+      const res = findShipmentById(demoShipments, query);
+      document.getElementById("linearSearchResult").textContent = JSON.stringify(
+        { operacion: "findShipmentById", entrada: query, resultado: res },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnBinarySearch").addEventListener("click", () => {
+      const targetWeight = parseFloat(document.getElementById("weightSearchInput").value);
+      const sortedByWeight = [...sampleProducts].sort((a, b) => a.weightKg - b.weightKg);
+      const index = binarySearchProductByWeight(sortedByWeight, targetWeight);
+      document.getElementById("binarySearchResult").textContent = JSON.stringify(
+        {
+          arregloOrdenadoPorPeso: sortedByWeight.map((p) => `${p.sku} (${p.weightKg}kg)`),
+          pesoBuscado: targetWeight,
+          indiceEncontrado: index,
+          producto: index >= 0 ? sortedByWeight[index] : null,
+        },
+        null,
+        2
+      );
+    });
+
+    // 4. Simulador de Transportistas
+    const simProductSelect = document.getElementById("simProduct");
+    simProductSelect.innerHTML = sampleProducts
+      .map((p) => `<option value="${p.sku}" ${p.sku === "LAPTOP-DELL-15" ? "selected" : ""}>${p.sku} (${p.weightKg}kg)</option>`)
+      .join("");
+
+    function updateCarrierSimulation() {
+      const sku = simProductSelect.value;
+      const product = findProductBySKU(sampleProducts, sku) || sampleProducts[0];
+      const quantity = parseInt(document.getElementById("simQty").value, 10) || 1;
+      const country = document.getElementById("simCountry").value;
+      const distanceKm = parseFloat(document.getElementById("simDistance").value) || 0;
+      const priority = document.getElementById("simPriority").value;
+
+      const simulatedShipment = {
+        ...sampleShipment,
+        sku: product.sku,
+        quantity,
+        priority,
+        destination: {
+          ...sampleShipment.destination,
+          country,
+          distanceKm,
+        },
+      };
+
+      const best = selectBestCarrier(sampleCarriers, simulatedShipment, product);
+      const banner = document.getElementById("bestCarrierBanner");
+
+      if (best) {
+        banner.className = "p-4 rounded-lg border bg-emerald-950/30 border-emerald-500/40 text-emerald-200 text-sm";
+        banner.innerHTML = `<strong>Mejor Transportista Seleccionado (<code>selectBestCarrier</code>):</strong> ${best.carrier.name} — Costo total: <strong>$${best.cost.toFixed(2)} USD</strong> | Puntaje de idoneidad: <strong>${best.score} / 100</strong>`;
+      } else {
+        banner.className = "p-4 rounded-lg border bg-red-950/30 border-red-500/40 text-red-300 text-sm";
+        banner.innerHTML = `<strong>Sin transportista apto:</strong> Ningún transportista alcanzó el puntaje mínimo requerido de 50 puntos para este envío.`;
+      }
+
+      const sortedCarriers = sortCarriersByReliability(sampleCarriers, "desc");
+      document.getElementById("carrierCards").innerHTML = sortedCarriers
+        .map((c) => {
+          const score = scoreCarrierForShipment(c, simulatedShipment, product);
+          const cost = calculateShippingCost(simulatedShipment, product, c);
+          const isBest = best && best.carrier.id === c.id;
+          return `
+          <div class="p-4 rounded-lg border ${isBest ? "bg-[#212429] border-[#FF6A00]" : "bg-[#1a1c21] border-[#363a43]"} space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-white">${c.name}</span>
+              <span class="text-xs px-2 py-0.5 rounded ${score >= 50 ? "bg-emerald-500/20 text-emerald-300" : "bg-red-500/20 text-red-300"}">Score: ${score}</span>
+            </div>
+            <p class="text-xs text-gray-400">Países: ${c.operatesIn.join(", ")} | On-Time: ${c.onTimeRate}%</p>
+            <p class="text-xs text-gray-400">Máx: ${c.maxWeightKg}kg | Prioridades: ${c.acceptsPriority.join(", ")}</p>
+            <p class="text-lg font-black text-[#FF6A00] pt-1">$${cost.toFixed(2)} USD</p>
+          </div>`;
+        })
+        .join("");
+    }
+
+    ["simProduct", "simQty", "simCountry", "simDistance", "simPriority"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updateCarrierSimulation);
+      document.getElementById(id).addEventListener("change", updateCarrierSimulation);
+    });
+
+    // 5. Botones de Validación
+    const validationOutput = document.getElementById("validationOutput");
+
+    document.getElementById("btnValidateValid").addEventListener("click", () => {
+      validationOutput.textContent = JSON.stringify(
+        {
+          productoValido: validateProduct(sampleProducts[0]),
+          envioValido: validateShipment(sampleShipment),
+          transportistaValido: validateCarrier(sampleCarriers[1]),
+        },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnValidateInvalidProduct").addEventListener("click", () => {
+      const badProduct = {
+        ...sampleProducts[0],
+        sku: "",
+        weightKg: 140,
+        dimensions: { lengthCm: -5, widthCm: 250, heightCm: 10 },
+        stockQuantity: -2,
+        unitCostUSD: 0,
+      };
+      validationOutput.textContent = JSON.stringify(
+        { entrada: badProduct, resultado: validateProduct(badProduct) },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnValidateInvalidShipment").addEventListener("click", () => {
+      const badShipment = {
+        ...sampleShipment,
+        quantity: 0,
+        declaredValueUSD: -50,
+        destination: { ...sampleShipment.destination, distanceKm: -15 },
+      };
+      validationOutput.textContent = JSON.stringify(
+        { entrada: badShipment, resultado: validateShipment(badShipment) },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnValidateInvalidCarrier").addEventListener("click", () => {
+      const badCarrier = {
+        ...sampleCarriers[0],
+        baseRateUSD: -3,
+        avgDeliveryDays: 0,
+        onTimeRate: 120,
+        maxWeightKg: -10,
+        operatesIn: [],
+      };
+      validationOutput.textContent = JSON.stringify(
+        { entrada: badCarrier, resultado: validateCarrier(badCarrier) },
+        null,
+        2
+      );
+    });
+
+    document.getElementById("btnRefreshReports").addEventListener("click", renderReports);
+
+    // Inicializar vistas por defecto
+    renderReports();
+    renderProducts(displayedProducts);
+    document.getElementById("btnSearchSku").click();
+    document.getElementById("btnBinarySearch").click();
+    updateCarrierSimulation();
+    document.getElementById("btnValidateValid").click();
+  </script>
+</body>
+</html>
