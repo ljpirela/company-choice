@@ -1,0 +1,5 @@
+node_modules/
+dist/
+repomix-output*
+*.log
+.DS_Store

@@ -1,0 +1,19 @@
+{
+  "name": "company-choice",
+  "version": "1.0.0",
+  "description": "TrackFlow Monorepo - AI Engineering",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "demo": "tsc && node dist/demo.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ljpirela/company-choice.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
